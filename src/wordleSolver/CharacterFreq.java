@@ -3,11 +3,13 @@ package wordleSolver;
 import java.util.regex.Pattern;
 
 public class CharacterFreq implements Comparable<CharacterFreq> {
-
+		//Contains information about Characters
+		//char, percent frequency, and if it is a vowel
 		private char character = 0;
 		private float frequency = 0;
 		private boolean isVowel = false;
 		
+		//Constructor
 		public CharacterFreq(char c, float f) {
 			this.character = c;
 			this.frequency = f;
