@@ -20,7 +20,11 @@ public class Dictionary {
 	private ArrayList<CharacterFreq> sortedFreq = new ArrayList<CharacterFreq>();
 	//longest word in dictionary
 	private int maxLength = 0;
+	private String legalAlphabet = "abcdefghijklmnopqrstuvwxyz";
 	
+	public String getAlphabet() {
+		return legalAlphabet;
+	}
 	public ArrayList<String> getFullDictionary() {
 		return dictionary;
 	}

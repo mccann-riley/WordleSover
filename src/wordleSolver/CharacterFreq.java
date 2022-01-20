@@ -33,9 +33,26 @@ public class CharacterFreq implements Comparable<CharacterFreq> {
 				v = "Vowel '";
 			return v+this.character+"': "+this.frequency*100+"%";
 		}
+		
+		public boolean isChar(char c) {
+			return this.character == c;
+		}
 
 		@Override
-		public int compareTo(CharacterFreq other) {
-			return (int) Math.floor(this.frequency-other.getFrequency());
+		public int compareTo(CharacterFreq o) {
+			return (int) Math.floor(this.frequency-o.getFrequency());
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if(!(o instanceof CharacterFreq) && !(o instanceof Character)) {
+				return false;
+			}
+			else if(o instanceof CharacterFreq){
+				return ((CharacterFreq) o).getCharacter() == this.character;
+			}
+			else {
+				return (Character) o == this.character;
+			}
 		}
 	}
