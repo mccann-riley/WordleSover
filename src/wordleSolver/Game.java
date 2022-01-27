@@ -1,7 +1,6 @@
 package wordleSolver;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 //Game (Human), Solver (Automated)
 enum gameType {
@@ -53,7 +52,7 @@ public class Game {
 			this.wordLength = 1;
 		if(this.attempts <= 0)
 			this.attempts = 1;
-		
+				
 		this.solution = generateSolution(wordLength);		
 	}
 
@@ -67,7 +66,34 @@ public class Game {
 	//Tells what letters are in the correct spot, 
 	//what letters are in the wrong spot but in the word,
 	//what letters are not in the word
-	public String processGuess(String guess) {
-		return "";
+	public boolean processGuess(String guess) {
+		int[] guessLocs = evalLocations(guess);
+		boolean correctGuess = true;
+		for(int i = 0; i < guess.length(); i++) {
+			if(guessLocs[i] != 1) {
+				correctGuess = false;
+			}
+		}
+		return correctGuess;
+	}
+	
+	public int[] evalLocations(String guess) {
+int[] guessLetters = new int[this.wordLength];
+		
+		for(int i = 0; i < guess.length(); i++) {
+			if(this.solution.contains(""+guess.charAt(i))) {
+				guessLetters[i] = -1;
+				//System.out.print(ConsoleColors.YELLOW + " " + guess.charAt(i) + " " + ConsoleColors.RESET);
+			}
+			else if(guess.charAt(i) == this.solution.charAt(i)) {
+				guessLetters[i] = 1;
+				//System.out.print(ConsoleColors.GREEN + " " + guess.charAt(i) + " " + ConsoleColors.RESET);
+			}
+			else {
+				//System.out.print(ConsoleColors.RED + " " + guess.charAt(i) + " " + ConsoleColors.RESET);
+			}
+		}
+		
+		return guessLetters;
 	}
 }

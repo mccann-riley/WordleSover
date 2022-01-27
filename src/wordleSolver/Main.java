@@ -17,6 +17,7 @@ public class Main {
 		
 		//generate new solver using the game's dictionary, 5 letter words, 6 attempts
 		Solver solver = new Solver(game);
+		//solver.generateGuesses(2); //method still causing errors I think when empty
 				
 		//display solution
 		System.out.println(game.getSolution());		

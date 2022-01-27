@@ -28,7 +28,7 @@ public class Solver {
 		//System.out.println(Arrays.toString(guesses));
 	}
 	
-	private String[] generateGuesses(int startingVowelNum) {
+	public String[] generateGuesses(int startingVowelNum) {
 		String included = this.dictionary.getAlphabet();
 		String excluded = "";
 		String[] guesses = new String[this.game.getAttempts()];
