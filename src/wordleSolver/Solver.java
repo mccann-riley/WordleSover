@@ -2,7 +2,9 @@ package wordleSolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Solver {
 	private int wordLength;
@@ -24,59 +26,49 @@ public class Solver {
 		this.wordLength = this.game.getWordLength();
 		
 		generateAnagramChecker(dictionary.getFullDictionary());
-		//String guesses[] = generateGuesses(2);
-		//System.out.println(Arrays.toString(guesses));
+		generateGuesses();
 	}
 	
-	public String[] generateGuesses(int startingVowelNum) {
-		String included = this.dictionary.getAlphabet();
+	public String[] generateGuesses() {
+		String included = "";
 		String excluded = "";
 		String[] guesses = new String[this.game.getAttempts()];
+		boolean wrongGuess = true;
 		for(int i = 0; i < guesses.length; i++) {
-			String currentGuess = "";
-			if(i == 0)
-				currentGuess = generateFirstGuess(startingVowelNum);
-			else
+			if(wrongGuess) {
+				String currentGuess = "";
 				currentGuess = bestGuess(included, excluded);
-			String[] updatedInfo = submitGuess(currentGuess, included, excluded);
-			included = updatedInfo[0];
-			excluded = updatedInfo[1];
-			guesses[i] = currentGuess;
+				guesses[i] = currentGuess;
+
+				int[] guessLocs = this.game.processGuess(guesses[i]);
+				
+				if(Arrays.stream(guessLocs).sum() == this.wordLength) {
+					wrongGuess = false;
+				}
+				
+				String[] updatedInfo = submitGuess(guessLocs, currentGuess, included, excluded);
+				
+				included = updatedInfo[0];
+				excluded = updatedInfo[1];	
+				System.out.println("include "+included);
+				System.out.println("exclude "+excluded);
+			}
 		}
 		return guesses;
 	}
 	
-	private String[] submitGuess(String guess, String incl, String excl) {
-		this.game.processGuess(guess);
+	private String[] submitGuess(int[] guessLocs, String guess, String incl, String excl) {
 		String updIncl = incl;
 		String updExcl = excl;
-		System.out.println(guess);
-		return new String[] {updIncl, updExcl};
-	}
-	
-	//First guess choosing one anagram containing words with
-	//highest frequency letters and max of vowelNum vowels
-	private String generateFirstGuess(int vowelNum) {
-		String[] characters = new String[wordLength];
-		int vowelCount = 0;
-		int filledIndex = 0;
-		int i = 0;
-		while(filledIndex < wordLength && filledIndex < dictionary.getLetterFrequency().size()) {
-			CharacterFreq c = dictionary.getLetterFrequency().get(i);
-			if(c.getIsVowel() && vowelCount < vowelNum) {
-				characters[filledIndex] = c.getCharacter()+"";
-				vowelCount++;
-				filledIndex++;
+		for(int i = 0; i < guess.length(); i++) {
+			if(guessLocs[i] == 0 && !updExcl.contains(""+guess.charAt(i))) {
+				updExcl += guess.charAt(i);
 			}
-			else if(!c.getIsVowel()) {
-				characters[filledIndex] = c.getCharacter()+"";
-				filledIndex++;
+			else if(!updIncl.contains(""+guess.charAt(i))) {
+				updIncl += guess.charAt(i);
 			}
-			i++;
 		}
-		//add check to make sure key is in hashmap
-		//generate new guess if not
-		return decodeAnagram(sortWord(String.join("", characters))).get(0);
+		return new String[] {sortWord(updIncl), sortWord(updExcl)};
 	}
 	
 	//Creates anagramChecker HashMap from dictionary
@@ -120,14 +112,16 @@ public class Solver {
 		ArrayList<String> possibleGuesses = possibleWords(included, excluded);
 		HashMap<String, Float> wordFreq = genWordFreq(possibleGuesses);
 		HashMap.Entry<String, Float> maxEntry = null;
-
+		
 		for (HashMap.Entry<String, Float> entry : wordFreq.entrySet())
 		{
+			System.out.println(entry+" Max: "+maxEntry);
 			if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
 		    {
 		        maxEntry = entry;
 		    }
 		}
+		System.out.println("FINAL MAX: "+maxEntry);
 		return decodeAnagram(maxEntry.getKey());
 	}
 	
@@ -170,13 +164,18 @@ public class Solver {
 	}
 	
 	private HashMap<String, Float> genWordFreqH(String word, HashMap<String, Float> wordFreq) {
+		HashSet<Character> letterSet = new HashSet<Character>();
+		word.chars().forEach(c -> letterSet.add((char) c));
+		ArrayList<Character> chars = new ArrayList<Character>();
+		letterSet.forEach(c -> chars.add((char) c));
+		Collections.sort(chars);
 		String sortedWord = sortWord(word);
-		char[] chars = sortedWord.toCharArray();
+		//char[] chars = sortedWord.toCharArray();
 		float wordFrequency = 0;
 		ArrayList<CharacterFreq> letterFreqList = dictionary.getLetterFrequency();
-		for(int i = 0; i < chars.length; i++) {
+		for(int i = 0; i < chars.size(); i++) {
 			int ind = 0;
-			while(!letterFreqList.get(ind).equals(chars[i])) {
+			while(!letterFreqList.get(ind).equals(chars.get(i))) {
 				ind++;
 			}
 			wordFrequency += letterFreqList.get(ind).getFrequency();
@@ -187,5 +186,4 @@ public class Solver {
 		return wordFreq;
 	}
 	
-	//Word with letters in position
 }

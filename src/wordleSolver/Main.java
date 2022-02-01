@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Main {
 	//File Path to dictionary
-	static String DICT_FILE_PARENT = "C:\\Users\\riley\\Documents";
-	static String DICT_FILE_NAME = "english_dictionary.txt";
+	static String DICT_FILE_PARENT = System.getProperty("user.dir");
+	static String DICT_FILE_NAME = "/inputs/wordle_answers_alphabetical.txt";
 	
 	public static void main(String args[]) {
 		//generate new game with dictionary, 5 letter words, 6 attempts, with automated solver
@@ -17,7 +17,8 @@ public class Main {
 		
 		//generate new solver using the game's dictionary, 5 letter words, 6 attempts
 		Solver solver = new Solver(game);
-		//solver.generateGuesses(2); //method still causing errors I think when empty
+		
+		System.out.println(Arrays.toString(solver.generateGuesses())); //method still causing errors I think when empty
 				
 		//display solution
 		System.out.println(game.getSolution());		

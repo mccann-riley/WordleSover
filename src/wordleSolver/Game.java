@@ -66,15 +66,16 @@ public class Game {
 	//Tells what letters are in the correct spot, 
 	//what letters are in the wrong spot but in the word,
 	//what letters are not in the word
-	public boolean processGuess(String guess) {
-		int[] guessLocs = evalLocations(guess);
-		boolean correctGuess = true;
-		for(int i = 0; i < guess.length(); i++) {
-			if(guessLocs[i] != 1) {
-				correctGuess = false;
-			}
-		}
-		return correctGuess;
+	public int[] processGuess(String guess) {
+//		int[] guessLocs = evalLocations(guess);
+//		boolean correctGuess = true;
+//		for(int i = 0; i < guess.length(); i++) {
+//			if(guessLocs[i] != 1) {
+//				correctGuess = false;
+//			}
+//		}
+//		return correctGuess;
+		return evalLocations(guess);
 	}
 	
 	public int[] evalLocations(String guess) {
